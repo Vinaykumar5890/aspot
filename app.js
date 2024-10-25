@@ -21,6 +21,31 @@ mongoose
   .then(() => console.log('DB Connected'))
   .catch(err => console.log(err))
 
+//Authentication Jwt Token
+
+function authenticateToken(request, response, next) {
+  let jwtToken
+  const authHeader = request.headers['authorization']
+  if (authHeader !== undefined) {
+    jwtToken = authHeader.split(' ')[1]
+  }
+  if (jwtToken === undefined) {
+    response.status(401)
+    response.send('Your Not Authorized User To  Make Changes On Assignments')
+  } else {
+    jwt.verify(jwtToken, 'jwt', async (error, payload) => {
+      if (error) {
+        response.status(401)
+        response.send(
+          'Your Not Authorized User To  Make Changes On Assignments',
+        )
+      } else {
+        next()
+      }
+    })
+  }
+}
+
 //User Register Using Post Method : /register
 
 app.post('/register', async (req, res) => {
@@ -85,7 +110,7 @@ app.post('/login', async (req, res) => {
 
 //User Change Password using Put Method  : /changePassword
 
-app.put('/changePassword', async (req, res) => {
+app.put('/changePassword',authenticateToken,async (req, res) => {
   try {
     const {email, oldPassword, newPassword} = req.body
     let exits = await Admituser.findOne({email})
@@ -117,7 +142,7 @@ app.put('/changePassword', async (req, res) => {
 
 // Contact Posting using Post Method : /contact
 
-app.post('/contact', async (req, res) => {
+app.post('/contact',authenticateToken,async (req, res) => {
   try {
     const {name, email, phone, address} = req.body
     let exits = await Contactuser.findOne({phone})
@@ -145,7 +170,7 @@ app.post('/contact', async (req, res) => {
 
 // Contact Updating using Put Method : /contact
 
-app.put('/contact/:id', async (req, res) => {
+app.put('/contact/:id',authenticateToken,async (req, res) => {
   const {id} = req.params
   const {email, name, phone, address} = req.body
   const u = {email, name, phone, address}
@@ -167,7 +192,7 @@ app.put('/contact/:id', async (req, res) => {
 
 //Contact Deleting Using Delete Method : /contact
 
-app.delete('/contact/:id', async (req, res) => {
+app.delete('/contact/:id',authenticateToken,async (req, res) => {
   try {
     await Contactuser.findByIdAndDelete(req.params.id)
     return res.send('Contact Deleted Succesfully')
@@ -178,7 +203,7 @@ app.delete('/contact/:id', async (req, res) => {
 
 //Get Contact using Get Method :/ contact
 
-app.get('/contact', async (req, res) => {
+app.get('/contact',authenticateToken,async (req, res) => {
   const {search} = req.query
   let filter = {}
 
@@ -196,7 +221,7 @@ app.get('/contact', async (req, res) => {
 
 //Get Contact based on there id : /contact/:id
 
-app.get('/contact/:id', async (req, res) => {
+app.get('/contact/:id',authenticateToken,async (req, res) => {
   const {id} = req.params
   try {
     const allData = await Contactuser.findById(id)
