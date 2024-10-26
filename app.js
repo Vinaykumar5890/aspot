@@ -173,14 +173,13 @@ app.post('/contact',authenticateToken,async (req, res) => {
 app.put('/contact/:id',authenticateToken,async (req, res) => {
   const {id} = req.params
   const {email, name, phone, address} = req.body
-  const u = {email, name, phone, address}
+  const u = {email, name, phone, address, updatedAt: new Date(Date.now())}
   try {
     // Update the Contact  in the database
 
     const updated = await Contactuser.findByIdAndUpdate(
       id,
       u,
-      {updatedAt: Date()},
       {new: true},
     )
     return res.status(200).send('Contact Updated Successfully')
