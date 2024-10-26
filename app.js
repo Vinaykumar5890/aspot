@@ -31,13 +31,13 @@ function authenticateToken(request, response, next) {
   }
   if (jwtToken === undefined) {
     response.status(401)
-    response.send('Your Not Authorized User To  Make Changes On Assignments')
+    response.send('Your Not Authorized User')
   } else {
     jwt.verify(jwtToken, 'jwt', async (error, payload) => {
       if (error) {
         response.status(401)
         response.send(
-          'Your Not Authorized User To  Make Changes On Assignments',
+          'Your Not Authorized User',
         )
       } else {
         next()
