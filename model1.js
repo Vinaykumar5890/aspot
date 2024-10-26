@@ -20,7 +20,7 @@ let Contactuser = new mongoose.Schema({
   },
   createdAt: {
     type: Date,
-    default: Date(),
+    default: Date.now,
     required: true,
   },
   updatedAt: {
