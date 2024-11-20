@@ -1,4 +1,4 @@
-# Covid-19 India
+# Users & contacts
 
 Given two files `app.js` and a database file `admitusers.db`,`contactusers.db` consisting of two tables `Users` and `Contact`.
 
